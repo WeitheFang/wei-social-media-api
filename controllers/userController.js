@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 
 module.exports = {
   // get all users
@@ -22,8 +22,8 @@ module.exports = {
   },
 
   // get one user by id
-  getUserById({ params }, res) {
-    User.findOne({ _id: params.id })
+  getUserById(req, res) {
+    User.findOne({ _id: req.params.id })
       .populate({
         path: "thoughts",
         select: "-__v",
@@ -56,13 +56,15 @@ module.exports = {
   // deleteUser
   deleteUser(req, res) {
     User.findOneAndDelete({ _id: req.params.id })
-      .then((user) => {
-        if (!user) {
-          res.status(404).json({ message: "No user found with this id!" });
-          return;
-        }
-        res.json(user);
-      })
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "No user with this ID" })
+          : Thought.findOneAndUpdate(
+              { _id: req.params.id },
+              { $pull: { thoughts: req.params.id } },
+              { new: true }
+            )
+      )
       .then(() =>
         res.json({ message: "User and associated thoughts were deleted!" })
       )
@@ -71,7 +73,7 @@ module.exports = {
 
   // updateUser
   updateUser(req, res) {
-    User.findOneAndUpdate({ _id: req.params.id })
+    User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .then((user) => {
         if (!user) {
           res.status(404).json({ message: "No user found with this id!" });
@@ -79,7 +81,6 @@ module.exports = {
         }
         res.json(user);
       })
-      .then((user) => res.json(user))
       .catch((err) => res.status(400).json(err));
   },
 
