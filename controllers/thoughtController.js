@@ -60,7 +60,7 @@ module.exports = {
 
   // updateThought
   updateThought(req, res) {
-    Thought.findOneAndUpdate({ _id: req.params.id })
+    Thought.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .then((thought) => {
         if (!thought) {
           res.status(404).json({ message: "No thought found with this id!" });
@@ -68,21 +68,19 @@ module.exports = {
         }
         res.json(thought);
       })
-      .then((thoughts) => res.json(thoughts))
       .catch((err) => res.status(400).json(err));
   },
 
   // deleteThought
   deleteThought(req, res) {
-    Thought.findOneAndDelete({ _id: req.params.id })
+    Thought.findOneAndDelete({ _id: req.params.id }, { new: true })
       .then((thought) => {
         if (!thought) {
           res.status(404).json({ message: "No thought found with this id!" });
           return;
         }
-        res.json(thought);
+        res.json({ message: "Thought deleted!" });
       })
-      .then((thoughts) => res.json(thoughts))
       .catch((err) => res.status(400).json(err));
   },
 
@@ -115,7 +113,7 @@ module.exports = {
           res.status(404).json({ message: "No thought found with this id!" });
           return;
         }
-        res.json(thought);
+        res.json({ message: "Reaction deleted!" });
       })
       .catch((err) => res.status(400).json(err));
   },
