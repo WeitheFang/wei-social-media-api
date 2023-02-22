@@ -41,19 +41,21 @@ module.exports = {
   // createThought
   createThought(req, res) {
     Thought.create(req.body)
-      .then(({ _id }) => {
+      .then((thoughtData) => {
         return User.findOneAndUpdate(
-          { _id: req.params.userId },
-          { $push: { thoughts: _id } },
+          { username: req.body.username },
+          { $push: { thoughts: thoughtData._id } },
           { new: true }
         );
       })
-      .then((dbUserData) => {
-        if (!dbUserData) {
-          res.status(404).json({ message: "No user found with this id!" });
+      .then((userData) => {
+        if (!userData) {
+          res.status(404).json({
+            message: "Thought created but no user found with this id",
+          });
           return;
         }
-        res.json(dbUserData);
+        res.json(userData);
       })
       .catch((err) => res.status(400).json(err));
   },
