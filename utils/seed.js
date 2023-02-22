@@ -42,6 +42,14 @@ connection.on("open", async () => {
   await Thought.collection.insertMany(thoughts);
   console.log("Inserted 100 thoughts");
 
+  for (let i = 0; i < 100; i++) {
+    const user = await User.findOneAndUpdate(
+      { username: thoughts[i].username },
+      { $push: { thoughts: thoughts[i] } },
+      { new: true }
+    );
+  }
+
   const reactions = [];
 
   for (let i = 0; i < 100; i++) {

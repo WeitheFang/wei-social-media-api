@@ -59,11 +59,7 @@ module.exports = {
       .then((user) =>
         !user
           ? res.status(404).json({ message: "No user with this ID" })
-          : Thought.findOneAndUpdate(
-              { _id: req.params.id },
-              { $pull: { thoughts: req.params.id } },
-              { new: true }
-            )
+          : Thought.deleteMany({ _id: { $in: user.thoughts } })
       )
       .then(() =>
         res.json({ message: "User and associated thoughts were deleted!" })
