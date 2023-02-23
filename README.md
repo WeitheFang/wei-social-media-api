@@ -43,7 +43,7 @@ npm start
 
 From there, simply run the port on Insomnia to test the GET/POST/PUT/DELETE method on the backend of the application.
 
-Walkthrough video for the application:
+Walkthrough video for the application: https://drive.google.com/file/d/1UXOKyIUPDOejkCzI1p0i6L-__zQZ6zjf/view
 
 ## Credits
 
